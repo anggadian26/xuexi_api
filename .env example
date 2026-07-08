@@ -1,0 +1,5 @@
+PORT=8888
+DB_HOST=xxxxx
+DB_USERNAME=xxx
+DB_PASSWORD=xxxxx
+DB_NAME=xxxxx
