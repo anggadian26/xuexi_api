@@ -58,7 +58,29 @@ function readById(req, res, next) {
 }
 // -- UPDATE USER 
 function update(req, res, next) {
-   res.render('index', {title: `Update User Data By ID ${req.params.id}`})
+   const data = {
+      username: req.body.username,
+      password: req.body.password,
+      email: req.body.email,
+      fullname: req.body.fullname,
+      picture: req.body.picture,
+      bio: req.body.bio,
+      updatedAt: new Date(),
+      updatedBy: 0,
+      isDeleted: false
+   }
+
+   User.update(data, {where: {id: req.params.id}}).then(result => {
+      res.status(200).json({
+         message: 'Success Update Data',
+         data: result
+      })
+   }).catch(err => {
+      res.status(500).json({
+         message: 'Update Failed',
+         data: err
+      })
+   })
 }
 // -- DELETE USER
 function destroy(req, res, next) {
