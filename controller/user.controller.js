@@ -50,7 +50,6 @@ function readById(req, res, next) {
    //    res.send(err)
    // });
 
-
    const id = req.params.id
    User.findByPk(id).then(users => {
       res.send(users)
@@ -120,7 +119,38 @@ function destroy(req, res, next) {
 }
 // -- SIGN IN
 function signin(req, res, next) {
-   res.render('index', {title: `Sign In`})
+   User.findOne({where: {email: req.body.email}}).then(user => {
+      if(user) {
+         if(user.isDeleted == false){
+            if(user.password == req.body.password) {
+               res.status(200).json({
+                  message: 'Success',
+                  data: user
+               })
+            } else {
+               res.status(401).json({
+                  message: 'Wrong Password',
+                  data: user
+               })
+            }
+         } else {
+            res.status(401).json({
+               message: 'User has been deleted',
+               data: user
+            })
+         }
+      } else {
+         res.status(401).json({
+            message: 'Email not Found',
+            data: user
+         })
+      }
+   }).catch(err => {
+      res.status(500).json({
+         message: 'Login failed',
+         data: err
+      })
+   })
 } 
 
 

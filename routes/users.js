@@ -9,6 +9,6 @@ router.post('/', userController.signup);
 router.get('/:id', userController.readById);
 router.patch('/:id', userController.update);
 router.delete('/:id', userController.destroy);
-router.get('/signin', userController.signin);
+router.post('/signin', userController.signin);
 
 module.exports = router;
