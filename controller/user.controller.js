@@ -31,7 +31,9 @@ function signup(req, res, next){
 }
 // -- READ USER 
 function read(req, res, next) {
-   User.findAll().then(users => {
+   User.findAll({
+      where: {isDeleted: false}
+   }).then(users => {
       res.send(users)
    }).catch(err => {
       res.send(err)
@@ -84,7 +86,37 @@ function update(req, res, next) {
 }
 // -- DELETE USER
 function destroy(req, res, next) {
-   res.render('index', {title: `Delete User Data By ID ${req.params.id}`})
+   // -- DELETE RECORD
+   // User.destroy({where: {id: req.params.id}}).then(result => {
+   //    res.status(200).json({
+   //       message: 'Deleted Data',
+   //       data: result
+   //    })
+   // }).catch(err => {
+   //    res.status(500).json({
+   //       message: 'Delete Failed',
+   //       data: err
+   //    })
+   // })
+
+   // DELETE SOFT 
+   const data = {
+      isDeleted: true,
+      deletedAt: new Date(),
+      deletedBy: 1
+   }
+
+   User.update(data, {where: {id: req.params.id}}).then(result => {
+      res.status(200).json({
+         message: 'Success Delete Data',
+         data: result
+      })
+   }).catch(err => {
+      res.status(500).json({
+         message: 'Delete Failed',
+         data: err
+      })
+   })
 }
 // -- SIGN IN
 function signin(req, res, next) {

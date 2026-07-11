@@ -8,7 +8,7 @@ router.get('/', userController.read);
 router.post('/', userController.signup);
 router.get('/:id', userController.readById);
 router.patch('/:id', userController.update);
+router.delete('/:id', userController.destroy);
 router.get('/signin', userController.signin);
-router.get('/delete/:id', userController.destroy);
 
 module.exports = router;
