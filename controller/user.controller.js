@@ -1,4 +1,7 @@
 const { User } = require('../models')
+const Validator = require("fastest-validator");
+
+const v = new Validator();
 
 
 // -- CREATE USER (Sign Up)
@@ -17,17 +20,50 @@ function signup(req, res, next){
       isDeleted: false
    }
 
-   User.create(data).then(result => {
-      res.status(201).json({
-         message: 'Success',
-         data: result
-      })
+   const schema = {
+      username: { type: "string", min: 5, max: 50, optional: false},
+      email: { type: "email", optional: false},
+      password: { type: "string", min: 5, max: 225, optional: false},
+   }
+
+   // -- Cek Email
+   User.findOne({ where: {email: req.body.email} }).then(user => {
+      if(user) {
+         //  email sudah digunakan
+         res.status(400).json({
+            message: 'Email already exist',
+         })
+      } else {
+         // penggunaan validasi 
+         const validationResult = v.validate(data, schema);
+
+         if (validationResult !== true) {
+            res.status(400).json({
+               message: 'Validation Failed',
+               data: validationResult
+            });
+         } else {
+            // create user
+            User.create(data).then(result => {
+               res.status(201).json({
+                  message: 'Success',
+                  data: result
+               })
+            }).catch(err => {
+               res.status(500).json({
+                  message: 'Register Failed',
+                  data: err
+               })
+            })
+         }
+      }
    }).catch(err => {
       res.status(500).json({
-         message: 'Register Failed',
+         message: 'Something wrong',
          data: err
       })
-   })
+   });
+
 }
 // -- READ USER 
 function read(req, res, next) {
