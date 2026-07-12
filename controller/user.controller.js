@@ -107,17 +107,34 @@ function update(req, res, next) {
       isDeleted: false
    }
 
-   User.update(data, {where: {id: req.params.id}}).then(result => {
-      res.status(200).json({
-         message: 'Success Update Data',
-         data: result
+   const schema = {
+      username: { type: "string", min: 5, max: 50, optional: false},
+      email: { type: "email", optional: false},
+      password: { type: "string", min: 5, max: 225, optional: false},
+   }
+
+   // Validasi Data
+   const validationResult = v.validate(data, schema);
+
+   if (validationResult !== true) {
+      res.status(400).json({
+         message: 'Validation Failed',
+         data: validationResult
+      });
+   } else {
+      User.update(data, {where: {id: req.params.id}}).then(result => {
+         res.status(200).json({
+            message: 'Success Update Data',
+            data: result
+         })
+      }).catch(err => {
+         res.status(500).json({
+            message: 'Update Failed',
+            data: err
+         })
       })
-   }).catch(err => {
-      res.status(500).json({
-         message: 'Update Failed',
-         data: err
-      })
-   })
+   }
+
 }
 // -- DELETE USER
 function destroy(req, res, next) {
