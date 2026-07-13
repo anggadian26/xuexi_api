@@ -194,8 +194,7 @@ function signin(req, res, next) {
                      res.status(200).json({
                         status: "SUCCESS",
                         message: 'Success Login',
-                        token: token,
-                        JWT_SECRET: JWT_SECRET
+                        token: token
                      })
                   })
                } else {
