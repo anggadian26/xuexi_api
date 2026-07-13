@@ -2,7 +2,10 @@ const { User } = require('../models')
 const Validator = require("fastest-validator");
 const bcrypt = require('bcrypt');
 const v = new Validator();
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
+const JWT_SECRET = process.env.JWT_SECRET
 
 // -- CREATE USER (Sign Up)
 function signup(req, res, next){
@@ -183,10 +186,17 @@ function signin(req, res, next) {
          if(user.isDeleted == false){
             bcrypt.compare(req.body.password, user.password, function(err, result) {
                if(result) {
-                  res.status(200).json({
-                     status: "SUCCESS",
-                     message: 'Success Login',
-                     data: user
+                  const token = jwt.sign({
+                     email: user.email,
+                     username: user.username,
+                     userid: user.id
+                  }, JWT_SECRET, function(err, token){
+                     res.status(200).json({
+                        status: "SUCCESS",
+                        message: 'Success Login',
+                        token: token,
+                        JWT_SECRET: JWT_SECRET
+                     })
                   })
                } else {
                   res.status(401).json({

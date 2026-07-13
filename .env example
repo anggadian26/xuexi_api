@@ -3,3 +3,4 @@ DB_HOST=xxxxx
 DB_USERNAME=xxx
 DB_PASSWORD=xxxxx
 DB_NAME=xxxxx
+JWT_SECRET=xxxxxx
