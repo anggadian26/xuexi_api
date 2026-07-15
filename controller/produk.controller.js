@@ -134,8 +134,27 @@ const updateProduk = async (req, res) => {
    }
 }
 
-const deleteProduk = (req, res) => {
+const deleteProduk = async (req, res) => {
+   const userId = req.user ? req.user.userid : 0;
+   const {id} = req.params
    
+   try {
+      const data = {
+         isDeleted: true,
+         deletedAt: new Date(),
+         deletedBy: userId
+      }
+
+      await Produk.update(data, {where: {id: id}})
+      return res.status(200).json({
+         message: "Deleted Success"
+      })
+   } catch (err) {
+      res.status(500).json({
+         message: 'Something wrong',
+         data: err
+      })
+   }
 }
 
 
