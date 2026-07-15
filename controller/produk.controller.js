@@ -19,8 +19,20 @@ const readAllProduk = async (req, res) => {
    }
 }
 
-const readByIdProduk = (req, res) => {
-
+const readByIdProduk = async (req, res) => {
+   const {id} = req.params
+   try {
+      const data = await Produk.findByPk(id);
+      return res.json({
+         message: "Get By ID Produk",
+         data: data
+      })
+   } catch (err) {
+      res.status(500).json({
+         message: "Server Error",
+         serverMessage: error
+      })
+   }
 }
 
 const addProduk = async (req, res) => {
