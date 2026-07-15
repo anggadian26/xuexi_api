@@ -88,12 +88,54 @@ const addProduk = async (req, res) => {
    }
 }
 
-const updateProduk = (req, res) => {
+const updateProduk = async (req, res) => {
+   const userId = req.user ? req.user.userid : 0;
+   const {id} = req.params
+   try {
+      const data = {
+         nama_produk: req.body.nama_produk,
+         ctgr_produk: req.body.ctgr_produk,
+         merek_produk: req.body.merek_produk,
+         updatedAt: new Date(),
+         updatedBy: userId,
+         isDeleted: false
+      }
 
+      const schema = {
+         nama_produk: { type: "string", min: 5, max: 100, optional: false },
+         ctgr_produk: { type: "string", min: 5, max: 100, optional: false },
+         merek_produk: { type: "string", min: 5, max: 90, optional: false }
+      }
+
+      // validasi data
+      const validationResult = v.validate(data, schema);
+      if (validationResult !== true) {
+         return res.status(400).json({
+            message: 'Validation Failed',
+            data: validationResult
+         });
+      }
+
+      // update data
+      await Produk.update(data, {where: {id: id}})
+      return res.status(200).json({
+         message: "Update Success",
+         data: {
+            id: id,
+            ...req.body
+         }
+      })
+
+   } catch (err) {
+      res.status(500).json({
+         message: 'Something wrong',
+         data: err
+      })
+   }
 }
 
 const deleteProduk = (req, res) => {
-
+   
 }
 
 
