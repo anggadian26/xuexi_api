@@ -3,8 +3,20 @@ const Validator = require("fastest-validator");
 const v = new Validator();
 
 
-const readAllProduk = (req, res) => {
+const readAllProduk = async (req, res) => {
+   try {
+      const data = await Produk.findAll({where: {isDeleted: false}})
 
+      return res.json({
+         message: "Get All Produk",
+         data: data
+      })
+   } catch (err) {
+      res.status(500).json({
+         message: "Server Error",
+         serverMessage: error
+      })
+   }
 }
 
 const readByIdProduk = (req, res) => {
